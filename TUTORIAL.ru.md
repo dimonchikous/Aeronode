@@ -13,7 +13,7 @@
 При покупке обратите внимание на то, как выглядит bme280, потому что из-за сходства с bmp280 часто происходит путаница!
 <img src="img/BMPvsBME.jpeg" alt="bme and bmp" width="50%" />
 
--# *(Источник: https://forum.arduino.cc/t/bme-bmp280-code-crashes-at-bmp-begin/1191017)*
+<small> *(Источник: https://forum.arduino.cc/t/bme-bmp280-code-crashes-at-bmp-begin/1191017)* </small>
 
 Вот как выглядят все компоненты(С припаяными ножками):
 
