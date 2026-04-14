@@ -3,12 +3,15 @@
 #include <SensirionI2cScd4x.h>		//SCD-40
 #include <Adafruit_GFX.h> 		//Graphics
 #include <Adafruit_SSD1306.h>		//SSD1306 
+#include <Adafruit_BME280.h>		//BME280
+#include <Adafruit_Sensor.h>		//Sensors lib
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
 #define I2C_OLED 0x3c
 #define I2C_SCD 0x62
+#define I2C_BME 0x76
 
 //bitmap icons
 
@@ -45,6 +48,7 @@ void displayMetrics(struct AirQuality currentData);
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 SensirionI2cScd4x scd4x;
+Adafruit_BME280 bme;
 
 void setup(void){
 	Serial.begin(115200);
@@ -81,6 +85,17 @@ void setup(void){
 			delay(1);
 	}
 
+	if (!bme.begin(I2C_BME)){
+		Serial.println("ERROR: BME280 NOT FOUND!");
+
+		display.clearDisplay();
+		display.setCursor(0,0);
+		display.print("No BME280");
+		display.display();
+		while(1)
+			delay(1);
+	}
+
 	Serial.println("Setup complete successfully!");
 }
 
@@ -103,13 +118,25 @@ void loop(void){
 }
 
 int getTemp(void){
-	//Waiting for bme280
-	return 24;
+	float fTemp = bme.readTemperature();
+
+	static float lastValidTemp=0;
+
+	if (isnan(fTemp))
+		return (int)lastValidTemp;
+	lastValidTemp = round(fTemp);
+	return (int)lastValidTemp;
 }
 
 int getHum(void){
-	//waiting for bme280
-	return 100;
+	float fHum = bme.readHumidity();
+
+	static float lastValidHum = 0;
+
+	if (isnan(fHum))
+		return (int)lastValidHum;
+	lastValidHum = round(fHum);
+	return (int)lastValidHum;
 }
 
 int getCO2(void){
@@ -130,7 +157,7 @@ int getCO2(void){
 		} else {
 			Serial.print("Error while reading SCD-40: ");
 			Serial.println(scdError);
-			return -1;
+			return lastValidCO2;
 		}
 	}
 	return lastValidCO2;
