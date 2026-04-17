@@ -5,46 +5,12 @@
 #include <Adafruit_SSD1306.h>		//SSD1306 
 #include <Adafruit_BME280.h>		//BME280
 #include <Adafruit_Sensor.h>		//Sensors lib
+#include <AeronodeConfig.h>		//Config
+#include <AeroSensors.h>		//Sensors
+#include <AeroDisplay.h>		//Display and bitmaps
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-
-#define I2C_OLED 0x3c
-#define I2C_SCD 0x62
-#define I2C_BME 0x76
-
-//bitmap icons
-
-//Temperature (8x8)
-const unsigned char temIco[] PROGMEM = {
-  0x04, 0x0A, 0x0A, 0x0A, 0x0E, 0x1F, 0x1F, 0x0E
-};
-
-//Humidity (8x8)
-const unsigned char humIco[] PROGMEM = {
-  0x04, 0x04, 0x0E, 0x0E, 0x1F, 0x1F, 0x1F, 0x0E
-};
-
-//CO2 (8x8)
-const unsigned char co2Ico[] PROGMEM = {
-  0x00, 0x06, 0x0F, 0x1F, 0x1F, 0x1F, 0x1F, 0x00
-};
-
-struct AirQuality {
-	int temp;
-	int hum;
-	int co2;
-};
-
-//BME280 functions
-int getTemp(void);
-int getHum(void);
-
-//SCD-40 functions
-int getCO2(void);
-
-//Oled functions
-void displayMetrics(struct AirQuality currentData); 
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 SensirionI2cScd4x scd4x;
@@ -53,7 +19,7 @@ Adafruit_BME280 bme;
 void setup(void){
 	Serial.begin(115200);
 	//I2C part
-	Wire.begin(21, 22);
+	Wire.begin(I2C_AERONODE_SDA, I2C_AERONODE_SCL);
 
 	//OLED part
 	if (!display.begin(SSD1306_SWITCHCAPVCC, I2C_OLED)){
@@ -107,86 +73,8 @@ void loop(void){
 	if (millis()-lastTime>=interval){
 		lastTime=millis();
 
-		struct AirQuality data;
-	
-		data.temp = getTemp();
-		data.hum = getHum();
-		data.co2 = getCO2();
+		struct AirQuality data = getAllMetrics();
 
 		displayMetrics(data);
 	}
-}
-
-int getTemp(void){
-	float fTemp = bme.readTemperature();
-
-	static float lastValidTemp=0;
-
-	if (isnan(fTemp))
-		return (int)lastValidTemp;
-	lastValidTemp = round(fTemp);
-	return (int)lastValidTemp;
-}
-
-int getHum(void){
-	float fHum = bme.readHumidity();
-
-	static float lastValidHum = 0;
-
-	if (isnan(fHum))
-		return (int)lastValidHum;
-	lastValidHum = round(fHum);
-	return (int)lastValidHum;
-}
-
-int getCO2(void){
-	static int lastValidCO2 = 0;
-
-	uint16_t co2 = 0;
-	float trTemp = 0.0f;
-	float trHum = 0.0f;
-
-	bool isDataReady = false;
-	scd4x.getDataReadyStatus(isDataReady);
-
-	if (isDataReady){
-		uint16_t scdError = scd4x.readMeasurement(co2, trTemp, trHum);
-		if (!scdError){
-			lastValidCO2=(int)co2;
-			return lastValidCO2;
-		} else {
-			Serial.print("Error while reading SCD-40: ");
-			Serial.println(scdError);
-			return lastValidCO2;
-		}
-	}
-	return lastValidCO2;
-}
-
-void displayMetrics(struct AirQuality currentData){
-	display.clearDisplay();
-
-	display.setTextColor(SSD1306_WHITE);
-
-	display.setTextSize(1);
-	display.setCursor(40,0);
-	display.println("AERONODE");
-	display.drawFastHLine(0, 10, 128, SSD1306_WHITE);
-	
-	//temperature
-	display.drawBitmap(10, 18, temIco, 8, 8, SSD1306_WHITE);
-	display.setCursor(30, 18);
-	display.printf("Temp: %d%cC", currentData.temp, (char)247);
-
-	//humidity
-	display.drawBitmap(10, 34, humIco, 8, 8, SSD1306_WHITE);
-	display.setCursor(30, 34);
-	display.printf("Hum: %d%%", currentData.hum);
-
-	//co2
-	display.drawBitmap(10, 50, co2Ico, 8, 8, SSD1306_WHITE);
-	display.setCursor(30, 50);
-	display.printf("CO2: %dppm", currentData.co2);
-
-	display.display();
 }
