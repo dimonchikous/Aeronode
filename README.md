@@ -3,8 +3,6 @@
 
 [Instructions](TUTORIAL.md)
 
-<img src="img/EN/workinprogress.png" alt="Work in progress" width="35%" />
-
 ## Main idea.
 The air in an apartment is rarely monitored; most often, it is checked poorly and based purely on personal feelings. This can frequently harm human health.
 
@@ -25,6 +23,8 @@ In addition to this, the following components are used:
 * SSD1306 128x64 OLED screen - for displaying information.
 
 ### Online
+<img src="img/EN/workinprogress.png" alt="Work in progress" width="35%" />
+
 ![Online workflow diagram](img/EN/roadmap.png)
 *(Since internet support is still in development, the diagram is not 100% accurate)*
 
