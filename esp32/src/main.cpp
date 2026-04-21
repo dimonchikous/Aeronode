@@ -5,9 +5,15 @@
 #include <Adafruit_SSD1306.h>		//SSD1306 
 #include <Adafruit_BME280.h>		//BME280
 #include <Adafruit_Sensor.h>		//Sensors lib
+#include <WiFi.h>			//WiFi lib
+#include <WiFiManager.h>		//WiFi manager
+#include <Preferences.h>		//Net preferences
+#include <HTTPClient.h>			//HTTP client
+#include <ArduinoJson.h>		//Json
 #include <AeronodeConfig.h>		//Config
 #include <AeroSensors.h>		//Sensors
 #include <AeroDisplay.h>		//Display and bitmaps
+#include <AeroNetwork.h>		//Network work
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -62,19 +68,42 @@ void setup(void){
 			delay(1);
 	}
 
+	#if AERONODE_ONLINE == 1
+		display.clearDisplay();
+		display.setCursor(0,0);
+		display.println("Starting WiFi...");
+		display.display();
+
+		initAeroNetwork();
+	#endif
+
 	Serial.println("Setup complete successfully!");
 }
 
 
 void loop(void){
-	static unsigned long lastTime = 0;
-	const unsigned long interval = 5000;	
+	//display timer config
+	static unsigned long lastDisplayTime = 0;
+	const unsigned long displayInterval = 5000;	
 	
-	if (millis()-lastTime>=interval){
-		lastTime=millis();
+	//network timer config
+	static unsigned long lastNetworkTime = 0;
+	const unsigned long networkInterval = 60000;
+	
+	if (millis()-lastDisplayTime>=displayInterval){
+		lastDisplayTime=millis();
 
 		struct AirQuality data = getAllMetrics();
 
 		displayMetrics(data);
+
+		}
+	#if AERONODE_ONLINE == 1
+	if (millis() - lastNetworkTime >= networkInterval){
+		lastNetworkTime = millis();
+		struct AirQuality data = getAllMetrics();
+		sendMetrics(data);
 	}
+	#endif
+
 }
