@@ -32,5 +32,8 @@ Once a minute, the device sends a JSON packet to a server with a Telegram bot. T
 
 Telegram is used as the messenger for the bot.
 
+## Credits
+* Weather data provided by the open-source project [wttr.in](https://github.com/chubin/wttr.in)
+
 ## Other information
 [github](https://github.com/dimonchikous/Aeronode) | [codeberg](https://codeberg.org/dimonchikous/Aeronode)

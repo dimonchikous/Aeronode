@@ -32,5 +32,8 @@
 
 В качестве мессенджера для бота используется телеграм.
 
+## Титры
+* Данные о погоде предоставлены открытым проектом [wttr.in](https://github.com/chubin/wttr.in)
+
 ## Прочая информация
 [github](https://github.com/dimonchikous/Aeronode) | [codeberg](https://codeberg.org/dimonchikous/Aeronode)
