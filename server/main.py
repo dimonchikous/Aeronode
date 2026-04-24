@@ -11,11 +11,38 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton;
 from aiogram.filters import Command;
 from dotenv import load_dotenv;
 
+import aiohttp;
+
 #env config
 load_dotenv();
 
 BOT_TOKEN = os.getenv("BOT_TOKEN");
+
 USE_WHITELIST = os.getenv("USE_WHITELIST", "False").lower() == "true";
+USE_WEATHER = os.getenv("USE_WEATHER", "False").lower() == "true";
+
+WEATHER_CITY=os.getenv("WEATHER_CITY");
+async def getWeather(city: str = WEATHER_CITY):
+        wUrl = f"https://wttr.in/{city}?format=j1"; #weather url
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(wUrl, timeout=5) as response:
+                    if response.status == 200:
+                        wData = await response.json(content_type=None);
+                        wCurrent = wData["current_condition"][0];
+
+                        return{
+                                "wTemp": wCurrent["temp_C"],
+                                "wHum": wCurrent["humidity"],
+                                "wDesc": wCurrent["weatherDesc"][0]["value"]
+                        }
+                    else:
+                        print(f"API ERROR: {response.status}")
+                        return None;
+        except Exception as e:
+            print(f"Error while connecting with weather API: {e}");
+            return None;
 
 #file reading
 def loadListFromFile(filename:str)->set:
@@ -62,18 +89,25 @@ async def cmd_info(message: types.Message):
     if str(message.from_user.id) not in allowed_users:
         await message.answer("ERROR: Not allowed user");
         return;
-
-    if not nodesData:
-        await message.answer("No data from Aeronodes.");
-        return;
+    
+    weather = None;
+    if USE_WEATHER:
+        weather = await getWeather(WEATHER_CITY);
 
     response_text = "Current Aeronode`s data:\n\n";
-    for node_name, data in nodesData.items():
-        response_text += f"Node name: <code>{node_name}</code>\n";
-        response_text += f"Temperature: {data['temp']}°C\n";
-        response_text += f"Humidity: {data['hum']}%\n";
-        response_text += f"CO2: {data['co2']}ppm\n";
+    if USE_WEATHER and weather:
+        response_text += f"Weather: {weather['wTemp']}°C, Humidity: {weather['wHum']}%, {weather['wDesc']}\n";
         response_text += "──────────────\n";
+
+    if not nodesData:
+        response_text += "No data from Aeronodes.\n";
+    else:
+        for node_name, data in nodesData.items():
+            response_text += f"Node name: <code>{node_name}</code>\n";
+            response_text += f"Temperature: {data['temp']}°C\n";
+            response_text += f"Humidity: {data['hum']}%\n";
+            response_text += f"CO2: {data['co2']}ppm\n";
+            response_text += "──────────────\n";
 
     await message.answer(response_text, parse_mode="HTML");
 
