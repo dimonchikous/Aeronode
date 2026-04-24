@@ -90,6 +90,7 @@ esptool --chip esp32 --port <YourPort> --baud 921600 write_flash 0x0 Aeronode-of
 4. Upload the firmware (as described above).
     * If using the **.bin** method, download and flash the file named `Aeronode-online.bin`.
 5. Upon powering the device for the first time, connect to the Wi-Fi Access Point it creates to configure your network settings.
+    * **Please note!** During the setup process (when specifying the server's IP address), you will need to provide a **port**. The default bot port is **5000**. To configure a custom port, change the `port` value at the very end of the `server/main.py` file to your desired one.
 
 ### Bot Configuration
 **Important**: The instructions below are written primarily for Linux systems.
@@ -113,17 +114,25 @@ python3 -m venv venv
 source venv/bin/activate # or activate.fish depending on your shell
 pip install -r requirements.txt
 ```
-6. Configure the `.env` file:
-Create/open the `.env` file and set your variables.
+6. .env Configuration
+Open the **.env** file and configure it.
 
-**BOT_TOKEN** - Your Telegram bot token obtained from @BotFather.
+**BOT_TOKEN** - The Telegram bot token obtained from @BotFather.
 
 **USE_WHITELIST** - Flag to enable the node whitelist. Default is False.
 
-**Example:**
+**USE_WEATHER** - Flag to enable outdoor weather monitoring. Default is True.
+
+**WEATHER_CITY** - The name or GPS coordinates of the location where you want to check the weather.
+
+**Example**
 ```env
 BOT_TOKEN=YOUR_BOT_TOKEN
+
 USE_WHITELIST=False
+USE_WEATHER=True
+
+WEATHER_CITY=Berlin
 ```
 7. Configure `users.txt`:
 Open the `users.txt` file.
