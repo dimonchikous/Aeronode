@@ -23,10 +23,7 @@ In addition to this, the following components are used:
 * SSD1306 128x64 OLED screen - for displaying information.
 
 ### Online
-<img src="img/EN/workinprogress.png" alt="Work in progress" width="35%" />
-
 ![Online workflow diagram](img/EN/roadmap.png)
-*(Since internet support is still in development, the diagram is not 100% accurate)*
 
 Once a minute, the device sends a JSON packet to a server with a Telegram bot. The bot tracks these packets and, upon the user's request, sends the data, allowing you to view the readings while away from home. There is also the ability to set a schedule for receiving readings, view the weather, and enable an improvised alarm that triggers at high temperatures and/or high CO2 levels. The main requirement is to have a server or a spare, unused computer lying around.
 
