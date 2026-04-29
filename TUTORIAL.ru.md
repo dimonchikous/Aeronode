@@ -122,7 +122,23 @@ pip install -r requiriments.txt
 
 **USE_WEATHER** - Флаг использования измерения погоды за окном. По умолчанию True.
 
-**WEATHER_CITY** - Название или GPS-координаты населёного пункта, в котором вам нужно смотреть погоду.
+**USE_CRITICAL_CO2_DETECTOR** - Флаг использования уведомлений при высоком уровне CO2. По умолчанию True.
+
+**USE_TIME_NOTIFICATION** -  Флаг использования будильника, который присылает информацию о воздухе ежедневно раз в определённое время. По умолчанию True.
+
+**USE_SLEEPTIME** - *(Требует флаги USE_CRITICAL_CO2_DETECTOR и USE_TIME_NOTIFICATION)!* Флаг блокировки уведомлений о высоком количестве CO2 с определённого времени до будильника. По умолчанию True.
+
+**WEATHER_CITY** - Название или GPS-координаты населёного пункта, в котором вам нужно смотреть погоду(если включен USE_WEATHER). Если не указать, будет использован город на основе ip-адреса.
+
+**MAX_CRITICAL_VALUE** - *(Требует флага USE_CRITICAL_CO2_DETECTOR)!* Количество CO2, при котором будет отсылаться уведомление о высоком содержании его в воздухе. По умолчанию 1100.
+
+**NORMAL_CRITICAL_VALUE** - *(Требует флага USE_CRITICAL_CO2_DETECTOR)!* Количество CO2, которое считается нормальным. По умолчанию 800.
+
+**NOTIFICATION_TIME** - *(Требует флага USE_TIME NOTIFICATION)!* Время, в которое ежедневно будет присылаться информация о воздухе. Указывается в формате ЧЧ:ММ *(Ч - час, М -минута)*. По умолчанию 06:00.
+
+**NOTIFICATION_MSG_START** - *(Требует флага USE_TIME_NOTIFICATION)!* Первое предложение в уведомлении будильника. Разрешается использовать внутри html теги. По умолчанию "Hello!".
+
+**SLEEPTIME** - *(Требует флага USE_SLEEPTIME)!* Время, с которого до будильника перестают приходить сообщения о высоком уровне CO2. Указывается в формате ЧЧ:ММ *(Ч - час, М -минута)*. По умолчанию 00:00.
 
 **Пример**
 ```env
@@ -130,8 +146,19 @@ BOT_TOKEN=ТОКЕН_БОТА
 
 USE_WHITELIST=False
 USE_WEATHER=True
+USE_CRITICAL_CO2_DETECTOR=True
+USE_TIME_NOTIFICATION=True
+USE_SLEEPTIME=True
 
 WEATHER_CITY=Moscow
+
+MAX_CRITICAL_VALUE=1100
+NORMAL_CRITICAL_VALUE=800
+
+NOTIFICATION_TIME=06:00
+NOTIFICATION_MSG_START=Hello!
+
+SLEEPTIME=00:00
 ```
 7. Конфигурация users.txt
 Откройте файл **users.txt**.

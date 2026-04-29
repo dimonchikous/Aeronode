@@ -123,7 +123,23 @@ Open the **.env** file and configure it.
 
 **USE_WEATHER** - Flag to enable outdoor weather monitoring. Default is True.
 
-**WEATHER_CITY** - The name or GPS coordinates of the location where you want to check the weather.
+**USE_CRITICAL_CO2_DETECTOR** - Flag to enable high CO2 level notifications. Default is True.
+
+**USE_TIME_NOTIFICATION** - Flag to enable the daily alarm/digest that sends air quality information at a specific time. Default is True.
+
+**USE_SLEEPTIME** - *(Requires USE_CRITICAL_CO2_DETECTOR and USE_TIME_NOTIFICATION flags)!* Flag to mute high CO2 notifications from a specified time until the daily alarm time (Do Not Disturb mode). Default is True.
+
+**WEATHER_CITY** - The name or GPS coordinates of the location where you want to check the weather (if USE_WEATHER is enabled). If not specified, the city will be determined automatically based on your IP address.
+
+**MAX_CRITICAL_VALUE** - *(Requires the USE_CRITICAL_CO2_DETECTOR flag)!* The CO2 level at which a high CO2 warning notification will be sent. Default is 1100.
+
+**NORMAL_CRITICAL_VALUE** - *(Requires the USE_CRITICAL_CO2_DETECTOR flag)!* The CO2 level that is considered normal. Default is 800.
+
+**NOTIFICATION_TIME** - *(Requires the USE_TIME_NOTIFICATION flag)!* The time when the daily air quality information will be sent. Specified in HH:MM format *(H - hour, M - minute)*. Default is 06:00.
+
+**NOTIFICATION_MSG_START** - *(Requires the USE_TIME_NOTIFICATION flag)!* The opening sentence of the daily notification. HTML tags are allowed. Default is "Hello!".
+
+**SLEEPTIME** - *(Requires the USE_SLEEPTIME flag)!* The time from which high CO2 notifications are muted until the daily alarm time. Specified in HH:MM format *(H - hour, M - minute)*. Default is 00:00.
 
 **Example**
 ```env
@@ -131,8 +147,19 @@ BOT_TOKEN=YOUR_BOT_TOKEN
 
 USE_WHITELIST=False
 USE_WEATHER=True
+USE_CRITICAL_CO2_DETECTOR=True
+USE_TIME_NOTIFICATION=True
+USE_SLEEPTIME=True
 
-WEATHER_CITY=Berlin
+WEATHER_CITY=Moscow
+
+MAX_CRITICAL_VALUE=1100
+NORMAL_CRITICAL_VALUE=800
+
+NOTIFICATION_TIME=06:00
+NOTIFICATION_MSG_START=Hello!
+
+SLEEPTIME=00:00
 ```
 7. Configure `users.txt`:
 Open the `users.txt` file.
