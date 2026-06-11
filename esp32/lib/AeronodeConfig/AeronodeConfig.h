@@ -10,7 +10,7 @@
 #include <Adafruit_Sensor.h>		//Sensors lib
 
 //Online
-#define AERONODE_ONLINE 0			//Set 1 if you want Online work
+#define AERONODE_ONLINE 1			//Set 1 if you want Online work
 
 #if AERONODE_ONLINE == 1
 	#define DEFAULT_PASSWORD "12345678"	//Device default password
@@ -22,6 +22,11 @@
 	#include <HTTPClient.h>
 	#include <ArduinoJson.h>
 #endif
+
+//Software Correction
+#define TEMPERATURE_CORRECTION 0
+#define HUMIDITY_CORRECTION 0
+#define CO2_CORRECTION 0
 
 //I2C adresses
 #define I2C_OLED 0x3c

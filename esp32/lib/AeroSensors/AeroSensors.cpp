@@ -55,9 +55,15 @@ int getCO2(void){
 AirQuality getAllMetrics(void){
 	AirQuality data;
 
-	data.temp = getTemp();
-	data.hum = getHum();
-	data.co2 = getCO2();
+	//Temperature
+	data.temp = getTemp() + TEMPERATURE_CORRECTION;
+
+	//Humidity
+	int rawHum = getHum() + HUMIDITY_CORRECTION;
+	data.hum = constrain(rawHum, 0, 100);
+
+	int rawCO2 = getCO2() + CO2_CORRECTION;
+	data.co2 = constrain(rawCO2, 0, 2147483647);
 
 	return data;
 }
