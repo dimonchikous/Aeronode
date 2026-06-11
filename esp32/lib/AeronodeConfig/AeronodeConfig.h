@@ -10,7 +10,7 @@
 #include <Adafruit_Sensor.h>		//Sensors lib
 
 //Online
-#define AERONODE_ONLINE 1			//Set 1 if you want Online work
+#define AERONODE_ONLINE 0			//Set 1 if you want Online work
 
 #if AERONODE_ONLINE == 1
 	#define DEFAULT_PASSWORD "12345678"	//Device default password
