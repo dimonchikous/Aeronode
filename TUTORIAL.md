@@ -32,6 +32,7 @@ git clone https://github.com/dimonchikous/Aeronode.git
 ```
 2. Navigate to the project directory: `Aeronode/esp32/`
 3. *(Optional)* Configure the settings in `lib/AeronodeConfig/AeronodeConfig.h` and `lib/AeroDisplay/AeroDisplay.h`.
+    * **Software correction** is specified in the *Software correction* block; the default value is 0 everywhere.
 4. Connect the ESP32 to your computer via USB.
 5. Build and upload the code:
 ```bash
